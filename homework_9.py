@@ -8,7 +8,7 @@ def input_error(func):
         except KeyError:
             return 'Enter user name'
         except ValueError:
-            return 'Give me name and phone please'
+            return 'The contact with this name already exists'
         except IndexError:
             return 'Contact not found'
     return inner
@@ -38,7 +38,8 @@ def add_handler(command):
         else:
             raise ValueError
     else:
-        return 'Invalid command. Please follow the format: add name phone'
+        return ('Invalid command. Please follow the format: '
+                'add name(at least 2 characters) phone(at least 10 digits)')
 
 
 @input_error
@@ -51,8 +52,11 @@ def change_handler(command):
         if name in contacts:
             contacts[name] = phone
             return f'Phone has been changed for {name} to {phone}'
+        else:
+            raise IndexError
     else:
-        raise IndexError
+        return ('Invalid command. Please follow the format: '
+                'change name(at least 2 characters) phone(at least 10 digits)')
 
 
 @input_error
@@ -66,7 +70,7 @@ def phone_handler(command):
         else:
             raise IndexError
     else:
-        raise ValueError
+        return 'Invalid command. Please follow the format: phone name(at least 2 characters)'
 
 
 @input_error
@@ -104,9 +108,6 @@ def main():
     while True:
         command = input('Please enter command: ').lower()
 
-        if command == '.' or command in ['good bye', 'close', 'exit']:
-            break
-
         for prefix, handler in handlers_with_command.items():
             if command.startswith(prefix):
                 print(handler(command))
@@ -115,6 +116,9 @@ def main():
             if command.startswith(prefix):
                 print(handler())
                 break
+
+        if command in [',', 'good bye', 'close', 'exit']:
+            break
 
 
 if __name__ == "__main__":
